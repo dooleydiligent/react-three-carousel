@@ -1,0 +1,49 @@
+/* Hero */
+.shell {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.shellContainer {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 4.5rem;
+  padding-bottom: 6rem;
+  z-index: 1;
+  position: relative;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    padding-top: 3rem;
+    padding-bottom: 4.5rem;
+  }
+}
+
+.shellTitle {
+  color: var(--mantine-color-white);
+  font-size: 50px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    font-size: 28px;
+    line-height: 1.3;
+  }
+}
+
+.shellButton {
+  margin-top: 2.25rem;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    width: 100px;
+  }
+}
+

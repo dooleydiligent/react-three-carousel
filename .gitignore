@@ -1,0 +1,5 @@
+!.gitignore
+\*.egg-info
+GET_*
+config.yaml
+node_modules
