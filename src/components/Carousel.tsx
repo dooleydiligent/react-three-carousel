@@ -1,13 +1,13 @@
 // https://cydstumpel.nl/
-// https://tympanus.net/codrops/2023/04/27/building-a-webgl-carousel-with-react-three-fiber-and-gsap/
+
 import { Image, Text, useScroll, useTexture } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { easing } from 'maath';
 import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
 
-export function Rig(props: any) {
-  const ref = useRef();
+export const Rig = (props: any): React.JSX.Element => {
+  const ref = useRef(null);
   const scroll = useScroll();
   useFrame((state, delta) => {
     if (ref && ref.current) {
@@ -18,10 +18,10 @@ export function Rig(props: any) {
     }
   });
   return <group ref={ref} {...props} />;
-}
+};
 
-function Card({ url,  ...props }: any) {
-  const ref = useRef();
+const Card = ({ url, selected, ...props }: any): React.JSX.Element => {
+  const ref = useRef(null);
   const [hovered, hover] = useState(false);
   const pointerOver = (e: any) => (e.stopPropagation(), hover(true));
   const pointerOut = () => hover(false);
@@ -32,6 +32,7 @@ function Card({ url,  ...props }: any) {
       easing.damp((ref.current as any).material, 'zoom', hovered ? 1 : 1.5, 0.2, delta);
     }
   });
+
   return (
     <Image
       ref={ref}
@@ -45,10 +46,10 @@ function Card({ url,  ...props }: any) {
       {/* <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} /> */}
     </Image>
   );
-}
+};
 
-export function Banner(props: any) {
-  const ref = useRef();
+export const Banner = (props: any): React.JSX.Element => {
+  const ref = useRef(null);
   const texture = useTexture('work_.png');
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
   const scroll = useScroll();
@@ -60,10 +61,7 @@ export function Banner(props: any) {
   });
   return (
     <mesh ref={ref} {...props}>
-      <Text fontSize={0.2} color="gold" anchorX="center" anchorY="top" position={[0, -0.75, 0]}>
-        Customer Reports
-      </Text>
-      {/* <cylinderGeometry args={[1.6, 1.6, 0.14, 128, 16, true]} /> */}
+      <cylinderGeometry args={[1.6, 1.6, 0.14, 128, 16, true]} />
       {/* <meshSineMaterial
                 map={texture}
                 map-anisotropy={16}
@@ -73,29 +71,23 @@ export function Banner(props: any) {
             /> */}
     </mesh>
   );
-}
+};
 
 export const Carousel = ({ radius, items, onSelected, sceneRef }: any): React.JSX.Element[] => {
-  // export function Carousel({ radius = 3.4, count = 8 }) {
-
-  // const meshRef = useRef<THREE.Mesh>(null);
   const meshRef = Array.from({ length: items.length }, (_) => useRef<THREE.Mesh>(null));
   const { camera } = useThree();
-  const [selected, setSelected] = useState(-1)
+  const [selected, setSelected] = useState(-1);
+
   useFrame((_state, delta) => {
-    for (let i = 0; i < items.length; i++) {
-      if (meshRef && meshRef[i] && meshRef[i].current) {
-        // meshRef[i].current.rotation.x += 1 * delta; // Rotate around X-axis
-        (meshRef[i].current as any).rotation.y -= 0.5 * delta; // Rotate around Y-axis
-        // (meshRef[i].current as any).rotation.y += (Math.PI + (1 / 5) * Math.PI * -0.01) * delta;
+    for (let i = 0; i < items.lenght; i++) {
+      if (meshRef && meshRef[i].current) {
+        (meshRef[i].current as any).rotation.x += 1 * delta; // Rotate around X-axis
+        (meshRef[i].current as any).rotation.y += 0.5 * delta; // Rotate around Y-axis
       }
     }
-    // if (sceneRef && sceneRef.current) {
-    //   (sceneRef.current as any).rotation.y -= 0.5 * delta;
-    // }
   });
 
-  const cards: JSX.Element[] = [];
+  const cards: React.JSX.Element[] = [];
   items.forEach((item: any, i: number) => {
     const position = [
       Math.sin((i / items.length) * Math.PI * 2) * radius,
@@ -106,8 +98,8 @@ export const Carousel = ({ radius, items, onSelected, sceneRef }: any): React.JS
 
     cards.push(
       <Card
-            onClick={() => {
-            setSelected(i);
+        onClick={() => {
+          setSelected(i);
           onSelected({
             ...item,
             order: i,
@@ -117,14 +109,29 @@ export const Carousel = ({ radius, items, onSelected, sceneRef }: any): React.JS
             sceneRef,
           });
         }}
-        key={item.name}
+        selected={selected == i}
+        key={item.id ?? item.name}
         url={item.image}
-        // url={`https://picsum.photos/600/350?v=${Math.floor(i % 10) + 1}`}
-        position={position}
-        rotation={rotation}
-            
+        position={[
+          Math.sin((i / items.length) * Math.PI * 2) * radius,
+          0,
+          Math.cos((i / items.length) * Math.PI * 2) * radius,
+        ]}
+        rotation={[0, Math.PI + (i / items.length) * Math.PI * 2, 0]}
       >
-        <Text ref={meshRef[i]} position={[0, 0.75, 0]} fontSize={0.2} color="gold" anchorX="center" anchorY="top">
+        <Text
+          ref={meshRef[i]}
+          position={[
+            Math.sin((i / items.length) * Math.PI * 2) * radius,
+            0.5,
+            Math.cos((i / items.length) * Math.PI * 2) * radius * -0.01,
+          ]}
+          rotation={[0, Math.PI + (i / items.length) * Math.PI * 4, 0]}
+          fontSize={0.1}
+          color="white"
+          anchorX="center"
+          anchorY="bottom"
+        >
           {items[i].name}
         </Text>
       </Card>
