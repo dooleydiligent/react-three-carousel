@@ -1,0 +1,12 @@
+.pagecontainer {
+	transition: opacity 0.3s ease-in-out;
+	/* Apply transition to the page container */
+}
+
+body.fadeout .pagecontainer {
+	opacity: 0;
+}
+
+body.fadein .pagecontainer {
+	opacity: 1;
+}
